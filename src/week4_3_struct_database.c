@@ -1,9 +1,9 @@
 /*
  * week4_3_struct_database.c
- * Author: [Your Name]
- * Student ID: [Your ID]
+ * Author: Aadityapratap Singh Baghel
+ * Student ID: 241ADB122
  * Description:
- *   Simple in-memory "database" using an array of structs.
+ *   Simple in memory "database" using an array of structs.
  *   Use malloc to allocate space for n Student records,
  *   read each record from the user, print them as a table,
  *   and then free the memory.
@@ -16,8 +16,12 @@
 #include <stdlib.h>
 #include <string.h>
 
-// TODO: Define struct Student with fields name (char[50]), id (int), grade (float)
-//       (same definition as in Task 2)
+// same struct as task 2
+struct Student {
+    char name[50];
+    int id;
+    float grade;
+};
 
 int main(void) {
     int n;
@@ -29,28 +33,39 @@ int main(void) {
         return 1;
     }
 
-    // TODO: Allocate memory for n Student structs using malloc
-    //       Example: students = malloc(n * sizeof(struct Student));
+    // one block big enough for n students
+    students = malloc(n * sizeof(struct Student));
 
-    // TODO: Check allocation success
-    // If students is NULL: print "Memory allocation failed." and return 1
+    // check malloc before touching the memory
+    if (students == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
 
-    // TODO: Read student data in a loop. For student i (counting from 1):
-    //       print "Enter data for student %d: ", then read
-    //       name (scanf("%49s", ...)), id and grade.
-    //       If a value cannot be read: print "Invalid input.",
-    //       free the array and return 1
+    for (int i = 0; i < n; i++) {
+        // i starts at 0 but the prompt counts from 1
+        printf("Enter data for student %d: ", i + 1);
 
-    // TODO: Print an empty line, then the table:
-    //       printf("%-6s %-11s %s\n", "ID", "Name", "Grade");
-    //       and for each student:
-    //       printf("%-6d %-11s %.1f\n", id, name, grade);
+        // %49s leaves room for the '\0' so a long name can't overflow name[50]
+        if (scanf("%49s %d %f", students[i].name, &students[i].id,
+                  &students[i].grade) != 3) {
+            printf("Invalid input.\n");
+            // memory is allocated already, free it before leaving
+            free(students);
+            return 1;
+        }
+    }
 
-    // Optional (not autograded): after the table, print the average
-    // grade or the top student
+    // blank line, then the header and one row per student in input order
+    printf("\n");
+    printf("%-6s %-11s %s\n", "ID", "Name", "Grade");
+    for (int i = 0; i < n; i++) {
+        printf("%-6d %-11s %.1f\n", students[i].id, students[i].name,
+               students[i].grade);
+    }
 
-    // TODO: Free allocated memory
-    (void)students;  // remove this line once you use students
+    // all done with the records
+    free(students);
 
     return 0;
 }

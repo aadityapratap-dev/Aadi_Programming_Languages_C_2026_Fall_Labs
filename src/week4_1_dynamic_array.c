@@ -1,7 +1,7 @@
 /*
  * week4_1_dynamic_array.c
- * Author: [Your Name]
- * Student ID: [Your ID]
+ * Author: Aadityapratap Singh Baghel
+ * Student ID: 241ADB122
  * Description:
  *   Demonstrates creation and usage of a dynamic array using malloc.
  *   Allocate memory for n integers, read them from the user,
@@ -24,25 +24,39 @@ int main(void) {
         return 1;
     }
 
-    // TODO: Allocate memory for n integers using malloc
-    // Example: arr = malloc(n * sizeof(int));
+    // get room for n ints, sizeof(int) so it works on any machine
+    arr = malloc(n * sizeof(int));
 
-    // TODO: Check allocation success
-    // If arr is NULL: print "Memory allocation failed." and return 1
+    // malloc can fail, so check before using arr
+    if (arr == NULL) {
+        printf("Memory allocation failed.\n");
+        return 1;
+    }
 
-    // TODO: Print the prompt "Enter %d integers: " (with n), then read
-    //       n integers into the array.
-    //       If a value cannot be read: print "Invalid input.",
-    //       free the array and return 1
+    printf("Enter %d integers: ", n);
+    for (int i = 0; i < n; i++) {
+        if (scanf("%d", &arr[i]) != 1) {
+            printf("Invalid input.\n");
+            // arr is already allocated here, so free it before quitting
+            free(arr);
+            return 1;
+        }
+    }
 
-    // TODO: Compute the sum and the average (use floating point for the average)
+    // long long so a big sum does not overflow
+    long long sum = 0;
+    for (int i = 0; i < n; i++) {
+        sum += arr[i];
+    }
 
-    // TODO: Print the results exactly as:
-    //       Sum = <sum>
-    //       Average = <average with 2 decimals, %.2f>
+    // cast first, otherwise it is integer division and 7 8 gives 7.00
+    double average = (double)sum / n;
 
-    // TODO: Free allocated memory
-    (void)arr;  // remove this line once you use arr
+    printf("Sum = %lld\n", sum);
+    printf("Average = %.2f\n", average);
+
+    // done with the array, give the memory back
+    free(arr);
 
     return 0;
 }
